@@ -56,7 +56,6 @@ func getCookie(response http.ResponseWriter, request *http.Request) {
 	}
 	accessToken := cookie.Value
 	fmt.Fprintln(response, accessToken)
-
 	return
 
 }
@@ -131,8 +130,8 @@ func signup(response http.ResponseWriter, request *http.Request) {
 		http.Error(response, err.Error(), http.StatusBadRequest)
 		return
 	}
-
 	creds = append(creds, credentials)
+	response.WriteHeader(http.StatusCreated)
 	return
 }
 
