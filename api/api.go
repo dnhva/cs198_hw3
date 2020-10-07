@@ -187,7 +187,7 @@ func getIndex(response http.ResponseWriter, request *http.Request) {
 			return
 		}
 	}
-	http.Error(response, err.Error(), http.StatusBadRequest)
+	http.Error(response, "username does not exist", http.StatusBadRequest)
 	return
 }
 
@@ -226,7 +226,7 @@ func getPassword(response http.ResponseWriter, request *http.Request) {
 			return
 		}
 	}
-	http.Error(response, err.Error(), http.StatusBadRequest)
+	http.Error(response, "username does not exist", http.StatusBadRequest)
 	return
 }
 
@@ -268,7 +268,7 @@ func updatePassword(response http.ResponseWriter, request *http.Request) {
 			return
 		}
 	}
-	http.Error(response, err.Error(), http.StatusBadRequest)
+	http.Error(response, "username does not exist", http.StatusBadRequest)
 	return
 }
 
@@ -312,6 +312,6 @@ func deleteUser(response http.ResponseWriter, request *http.Request) {
 			return
 		}
 	}
-	http.Error(response, err.Error(), http.StatusBadRequest)
+	http.Error(response, "username does not exist", http.StatusBadRequest)
 	return
 }
