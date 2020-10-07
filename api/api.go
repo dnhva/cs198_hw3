@@ -6,7 +6,6 @@ import (
 	"net/http"
 
 	"strconv"
-	"strings"
 
 	"github.com/gorilla/mux"
 )
@@ -56,7 +55,7 @@ func getCookie(response http.ResponseWriter, request *http.Request) {
 		return
 	}
 	accessToken := cookie.Value
-	fmt.Fprintln(response, strings.TrimSuffix(accessToken, "\n"))
+	fmt.Fprintf(response, accessToken)
 	return
 
 }
@@ -99,6 +98,10 @@ func getJSON(response http.ResponseWriter, request *http.Request) {
 		http.Error(response, err.Error(), http.StatusBadRequest)
 		return
 	}
+	if credentials.Username == "" || credentials.Password == "" {
+		http.Error(response, "empty username or password", http.StatusBadRequest)
+		return
+	}
 
 	fmt.Fprintf(response, credentials.Username+"\n")
 	fmt.Fprintf(response, credentials.Password)
@@ -129,6 +132,10 @@ func signup(response http.ResponseWriter, request *http.Request) {
 	err := jsonDecoder.Decode(&credentials)
 	if err != nil {
 		http.Error(response, err.Error(), http.StatusBadRequest)
+		return
+	}
+	if credentials.Username == "" || credentials.Password == "" {
+		http.Error(response, "empty username or password", http.StatusBadRequest)
 		return
 	}
 	for i := 0; i < len(creds); i++ {
@@ -169,6 +176,10 @@ func getIndex(response http.ResponseWriter, request *http.Request) {
 		http.Error(response, err.Error(), http.StatusBadRequest)
 		return
 	}
+	if credentials.Username == "" {
+		http.Error(response, "empty username", http.StatusBadRequest)
+		return
+	}
 	for i := 0; i < len(creds); i++ {
 		if creds[i].Username == credentials.Username {
 			fmt.Fprintf(response, strconv.Itoa(i))
@@ -202,6 +213,10 @@ func getPassword(response http.ResponseWriter, request *http.Request) {
 	err := jsonDecoder.Decode(&credentials)
 	if err != nil {
 		http.Error(response, err.Error(), http.StatusBadRequest)
+		return
+	}
+	if credentials.Username == "" {
+		http.Error(response, "empty username", http.StatusBadRequest)
 		return
 	}
 	for i := 0; i < len(creds); i++ {
@@ -242,6 +257,10 @@ func updatePassword(response http.ResponseWriter, request *http.Request) {
 		http.Error(response, err.Error(), http.StatusBadRequest)
 		return
 	}
+	if credentials.Username == "" {
+		http.Error(response, "empty username", http.StatusBadRequest)
+		return
+	}
 	for i := 0; i < len(creds); i++ {
 		if creds[i].Username == credentials.Username {
 			creds[i].Password = credentials.Password
@@ -275,4 +294,23 @@ func deleteUser(response http.ResponseWriter, request *http.Request) {
 	*/
 
 	/*YOUR CODE HERE*/
+	credentials := Credentials{}
+	jsonDecoder := json.NewDecoder(request.Body)
+	err := jsonDecoder.Decode(&credentials)
+	if err != nil {
+		http.Error(response, err.Error(), http.StatusBadRequest)
+		return
+	}
+	for i := 0; i < len(creds); i++ {
+		if creds[i].Username == credentials.Username {
+			if i == len(creds)-1 {
+				creds = creds[:i]
+			} else {
+				creds = append(creds[:i], creds[i+1:]...)
+			}
+			return
+		}
+	}
+	http.Error(response, err.Error(), http.StatusBadRequest)
+	return
 }
