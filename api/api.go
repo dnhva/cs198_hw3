@@ -6,6 +6,7 @@ import (
 	"net/http"
 
 	"strconv"
+	"strings"
 
 	"github.com/gorilla/mux"
 )
@@ -55,7 +56,7 @@ func getCookie(response http.ResponseWriter, request *http.Request) {
 		return
 	}
 	accessToken := cookie.Value
-	fmt.Fprintln(response, accessToken)
+	fmt.Fprintln(response, strings.TrimSuffix(accessToken, "\n"))
 	return
 
 }
@@ -129,6 +130,12 @@ func signup(response http.ResponseWriter, request *http.Request) {
 	if err != nil {
 		http.Error(response, err.Error(), http.StatusBadRequest)
 		return
+	}
+	for i := 0; i < len(creds); i++ {
+		if creds[i].Username == credentials.Username {
+			http.Error(response, err.Error(), http.StatusBadRequest)
+			return
+		}
 	}
 	creds = append(creds, credentials)
 	response.WriteHeader(http.StatusCreated)
