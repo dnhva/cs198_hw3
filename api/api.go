@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"net/http"
 
+	"strconv"
+
 	"github.com/gorilla/mux"
 )
 
@@ -154,6 +156,19 @@ func getIndex(response http.ResponseWriter, request *http.Request) {
 	*/
 
 	/*YOUR CODE HERE*/
+	credentials := Credentials{}
+	jsonDecoder := json.NewDecoder(request.Body)
+	err := jsonDecoder.Decode(&credentials)
+	if err != nil {
+		http.Error(response, err.Error(), http.StatusBadRequest)
+		return
+	}
+	for i := 0; i < len(creds); i++ {
+		if creds[i].Username == credentials.Username {
+			fmt.Fprintf(response, strconv.Itoa(i)+"\n")
+		}
+	}
+	return
 }
 
 func getPassword(response http.ResponseWriter, request *http.Request) {
@@ -174,6 +189,19 @@ func getPassword(response http.ResponseWriter, request *http.Request) {
 	*/
 
 	/*YOUR CODE HERE*/
+	credentials := Credentials{}
+	jsonDecoder := json.NewDecoder(request.Body)
+	err := jsonDecoder.Decode(&credentials)
+	if err != nil {
+		http.Error(response, err.Error(), http.StatusBadRequest)
+		return
+	}
+	for i := 0; i < len(creds); i++ {
+		if creds[i].Username == credentials.Username {
+			fmt.Fprintf(response, creds[i].Password+"\n")
+		}
+	}
+	return
 }
 
 func updatePassword(response http.ResponseWriter, request *http.Request) {
@@ -197,6 +225,18 @@ func updatePassword(response http.ResponseWriter, request *http.Request) {
 	*/
 
 	/*YOUR CODE HERE*/
+	credentials := Credentials{}
+	jsonDecoder := json.NewDecoder(request.Body)
+	err := jsonDecoder.Decode(&credentials)
+	if err != nil {
+		http.Error(response, err.Error(), http.StatusBadRequest)
+		return
+	}
+	for i := 0; i < len(creds); i++ {
+		if creds[i].Username == credentials.Username {
+			creds[i].Password = credentials.Password
+		}
+	}
 }
 
 func deleteUser(response http.ResponseWriter, request *http.Request) {
