@@ -70,7 +70,7 @@ func getQuery(response http.ResponseWriter, request *http.Request) {
 
 	/*YOUR CODE HERE*/
 	userID := request.URL.Query().Get("userID")
-	fmt.Fprintf(response, userID+"\n")
+	fmt.Fprintf(response, userID)
 	return
 }
 
@@ -101,7 +101,7 @@ func getJSON(response http.ResponseWriter, request *http.Request) {
 	}
 
 	fmt.Fprintf(response, credentials.Username+"\n")
-	fmt.Fprintf(response, credentials.Password+"\n")
+	fmt.Fprintf(response, credentials.Password)
 	return
 
 }
@@ -165,9 +165,11 @@ func getIndex(response http.ResponseWriter, request *http.Request) {
 	}
 	for i := 0; i < len(creds); i++ {
 		if creds[i].Username == credentials.Username {
-			fmt.Fprintf(response, strconv.Itoa(i)+"\n")
+			fmt.Fprintf(response, strconv.Itoa(i))
+			return
 		}
 	}
+	http.Error(response, err.Error(), http.StatusBadRequest)
 	return
 }
 
@@ -198,9 +200,11 @@ func getPassword(response http.ResponseWriter, request *http.Request) {
 	}
 	for i := 0; i < len(creds); i++ {
 		if creds[i].Username == credentials.Username {
-			fmt.Fprintf(response, creds[i].Password+"\n")
+			fmt.Fprintf(response, creds[i].Password)
+			return
 		}
 	}
+	http.Error(response, err.Error(), http.StatusBadRequest)
 	return
 }
 
@@ -235,8 +239,11 @@ func updatePassword(response http.ResponseWriter, request *http.Request) {
 	for i := 0; i < len(creds); i++ {
 		if creds[i].Username == credentials.Username {
 			creds[i].Password = credentials.Password
+			return
 		}
 	}
+	http.Error(response, err.Error(), http.StatusBadRequest)
+	return
 }
 
 func deleteUser(response http.ResponseWriter, request *http.Request) {
